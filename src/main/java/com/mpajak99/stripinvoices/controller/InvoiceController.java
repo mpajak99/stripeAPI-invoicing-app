@@ -29,6 +29,7 @@ public class InvoiceController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
         return new ResponseEntity<>(invoiceService.getInvoiceById(id), HttpStatus.OK);
     }
 

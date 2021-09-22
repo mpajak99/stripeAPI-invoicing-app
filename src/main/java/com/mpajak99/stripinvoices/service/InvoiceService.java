@@ -11,26 +11,30 @@ import com.stripe.param.InvoiceCreateParams;
 import com.stripe.param.InvoiceItemCreateParams;
 import com.stripe.param.PriceCreateParams;
 import com.stripe.param.ProductCreateParams;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 
 @Service
 public class InvoiceService {
 
-    private String key = "sk_test_51Jb7MWAuK0ljMfv73q52eFrZimzW2TbcxxwrpDjrCnI18R0CI6m2u1fNJ2NjdnnHCXsyAyuF5leaZeSEDHrBVtYX0006DzRNFV";
+    @Value("${STRIPE_SECRET_KEY}")
+    private String secretKey;
+
+    @PostConstruct
+    public void init() {
+        Stripe.apiKey = secretKey;
+    }
 
     public Invoice getInvoiceById(String id) throws StripeException {
-        Stripe.apiKey = key;
-
         Invoice invoice = Invoice.retrieve(id);
 
         return invoice;
     }
 
     public Invoice addInvoice(InvoiceData invoiceData) throws StripeException {
-        Stripe.apiKey = key;
-
         String customerId = invoiceData.getCustomer();
 
         BigDecimal quantity = invoiceData.getQuantity();
@@ -69,6 +73,7 @@ public class InvoiceService {
                 .build();
 
         Price price = Price.create(priceParams);
+
         return price;
     }
 }
